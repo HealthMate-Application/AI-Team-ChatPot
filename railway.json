@@ -2,7 +2,12 @@
     "$schema": "https://railway.app/railway.schema.json",
     "build": {
       "builder": "NIXPACKS",
-      "buildCommand": "pip install pipenv && pipenv install --deploy"
+      "buildCommand": "pip install pipenv && pipenv install --deploy",
+      "buildFlags": {
+        "NIXPACKS_PYTHON_VERSION": "3.11",
+        "NIXPACKS_PIPENV_VERSION": "2023.12.1",
+        "NIXPACKS_PYTHON_INSTALL_CMD": "pip install --no-cache-dir pipenv && pipenv install --deploy --system"
+      }
     },
     "deploy": {
       "startCommand": "pipenv run uvicorn Chatpot.api:app --host 0.0.0.0 --port $PORT",
