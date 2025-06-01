@@ -1,0 +1,16 @@
+env/
+*.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.bak
+*.swp
+docker-compose.override.yml
+

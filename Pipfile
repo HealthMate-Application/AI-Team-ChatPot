@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"     
+verify_ssl = true
+
+[packages]
+fastapi = "*"
+langchain-core = ">=0.3.15"
+uvicorn = {extras = ["standard"], version = "*"}
+python-multipart = "*"
+huggingface-hub = "*"
+
+[requires]
+python_version = "3.11"
+
+[pipenv]
+allow_prereleases = true
+
+[dev-packages]
