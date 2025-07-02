@@ -1,14 +1,21 @@
 import streamlit as st
 import requests
-import codecs
-
+import uuid
 
 st.set_page_config(page_title="Groq Chat", page_icon="🤖", layout="centered")
-st.title("🤖 Chat with Groq LLM (Streamed)")
+st.title("🤖 Chat with Groq LLM (Non-Streaming)")
 
-# Initialize session state for chat history
+# Initialize session state for session_id and chat history
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())  # Unique session ID
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
+
+# Display current session ID in the sidebar
+with st.sidebar:
+    st.markdown("### Current Session ID")
+    st.code(st.session_state.session_id)
 
 # Display chat history
 for msg in st.session_state.messages:
@@ -24,29 +31,18 @@ if prompt := st.chat_input("Type your message..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Placeholder for streamed assistant response
+    # Call FastAPI endpoint
+    response = requests.post(
+        "http://127.0.0.1:8000/chat",
+        json={"message": prompt, "session_id": st.session_state.session_id}
+    )
+
+    response_dict = response.json()
+    assistant_reply = response_dict.get("response", "")
+
+    # Display assistant reply
     with st.chat_message("assistant"):
-        streamed_text = ""
-        container = st.empty()
+        st.markdown(assistant_reply)
 
-        # Call your FastAPI endpoint with stream
-        response = requests.post(
-            "http://127.0.0.1:8000/chat",
-            params={"message": prompt}
-        )
-
-        decoder = codecs.getincrementaldecoder("utf-8")()
-        streamed_text = ""
-        container = st.empty()
-
-        for chunk in response.iter_content(chunk_size=1):
-            if chunk:
-                streamed_text += decoder.decode(chunk)
-                container.markdown(streamed_text + "▌")  # Typing cursor
-
-        # Flush any remaining buffered characters
-        streamed_text += decoder.decode(b"", final=True)
-        container.markdown(streamed_text)  # Final display
-
-        # Append assistant response to session history
-        st.session_state.messages.append({"role": "assistant", "content": streamed_text})
+    # Append assistant reply to chat history
+    st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
