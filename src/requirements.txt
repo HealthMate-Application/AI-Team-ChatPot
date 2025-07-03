@@ -1,5 +1,5 @@
 groq==0.29.0
-python-dotenv
+python-dotenv==1.1.1
 fastapi==0.115.12
 uvicorn[standard]==0.34.3
-streamlit
+streamlit==1.46.1
