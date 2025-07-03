@@ -25,8 +25,7 @@ async def lifespan(app: FastAPI):
     )
     app.memory = Memory()
 
-    yield
-    pass
+    
 
 app = FastAPI(lifespan=lifespan)
 
